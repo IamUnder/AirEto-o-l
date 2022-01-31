@@ -25,7 +25,7 @@ mongoose.connect(url,
 .catch( e => console.log('Error en la conexion: ', e) )
 
 // Importacion de rutas
-
+const primitiva = require('./routes/primitiva')
 
 // Middleware
 app.get('/', (req, res) => {
@@ -34,6 +34,8 @@ app.get('/', (req, res) => {
         mensaje: 'Works!'
     })
 })
+
+app.use('/primitiva', primitiva)
 
 // Inicializacion server
 const PORT = process.env.PORT || 3000
