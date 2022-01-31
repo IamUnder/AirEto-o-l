@@ -9,6 +9,7 @@ const Config = require('../models/config')
 const Num = require('../models/num')
 
 // Rutas 
+router.get('/test', primitiva.test) // Ruta de testing
 router.get('/get', primitiva.get) // Ruta de obtencion del resultado
 router.get('/save', primitiva.save) // Ruta para la carga de valores
 router.post('/post', primitiva.post) // Ruta para la carga de valores antiguos

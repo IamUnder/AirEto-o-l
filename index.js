@@ -17,7 +17,12 @@ app.use(bodyparser.json())
 
 // Conexion DB
 //const url = `mongodb://${process.env.USERDB}:${process.env.PASSWORDDB}@${process.env.URL}/${process.env.DBNAME}?retryWrites=true&w=majority`
-const url = `mongodb://${process.env.URL}/${process.env.DBNAME}?retryWrites=true&w=majority`
+var url = ''
+if (process.env.URL) {
+    url = `mongodb://${process.env.URL}/${process.env.DBNAME}?retryWrites=true&w=majority`
+} else {
+    url = `mongodb+srv://${process.env.DBUSER}:${process.env.DBPASSWORD}@airetol.m24hl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
+}
 mongoose.connect(url,
     { useNewUrlParser: true, useUnifiedTopology: true }
 )

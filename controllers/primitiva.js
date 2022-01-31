@@ -1,11 +1,11 @@
-// Importacion de modulos
-const config = require('nodemon/lib/config');
-const puppeteer = require('puppeteer');
+
 
 // Importacion de modelos
 const Config = require('../models/config');
 const Num = require('../models/num');
 const Generate = require('../models/generate');
+const puppeteer = require('puppeteer');
+const res = require('express/lib/response');
 
 // Funcion get
 get = async ( req, res ) => {
@@ -156,21 +156,22 @@ async function rawData (url) {
     try {
         // Abrimos una instancia del puppeteer y accedemos a la url
         const browser = await puppeteer.launch({
-            //headless: false,
-            //slowMo: 1000
+            headless: true,
+            args: ['--no-sandbox','--disable-setuid-sandbox']
         })
         const page = await browser.newPage()
         await page.goto(url)
 
         //Obtenemos los numeros
-        const valoresRaw = await page.$eval(process.env.CLASSPRIMITIVA, numeros => numeros.textContent);
-        var valores = []
+        const valoresRaw = await page.$eval(process.env.CLASSPRIMITIVA, numeros => numeros.textContent)
 
         // Tratamos los valores
-        for (let index = 0; index < 16; index+=2) {
-            let temp = valoresRaw[index] + valoresRaw[index+1]
-            valores.push(temp)
-        }
+        var valores = []
+        valores = valoresRaw.replace(/ /g,'') // Quitamos el array
+        valores = valores.split('\n') // Quitamos los saltos de linea
+        valores = valores.splice(1,8) // Quitamos los valores que no soy necesarios
+        
+        console.log(valores);
 
         browser.close()
 
@@ -179,25 +180,57 @@ async function rawData (url) {
     }
 
     // Devolvemos los valores
-    return valores
-
+     return valores
+    
 }
 
 // Funcion para conseguir la semana
 getWeek = () => {
 
-    currentdate = new Date();
-    var oneJan = new Date(currentdate.getFullYear(),0,1);
-    var numberOfDays = Math.floor((currentdate - oneJan) / (24 * 60 * 60 * 1000));
-    var result = Math.ceil(( currentdate.getDay() + 1 + numberOfDays) / 7);
+    currentdate = new Date()
+    var oneJan = new Date(currentdate.getFullYear(),0,1)
+    var numberOfDays = Math.floor((currentdate - oneJan) / (24 * 60 * 60 * 1000))
+    var result = Math.ceil(( currentdate.getDay() + 1 + numberOfDays) / 7)
+
+    if (currentdate.getDay() > 0 && currentdate.getDay() < 3) {
+        result++
+    }
 
     return result
 
+}
+
+test = async (req, res) => {
+
+    const browser = await puppeteer.launch({
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--window-size=1920,1080',
+            '--user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"'
+        ]
+    });
+
+    const page = await browser.newPage();
+    await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36')
+    await page.setJavaScriptEnabled(true)
+    await page.goto(process.env.PRIMITIVAURL)
+    console.log(page.isJavaScriptEnabled());
+
+    await page.screenshot().then(function(buffer) {
+        res.setHeader('Content-Disposition', 'attachment;filename=test.png');
+        res.setHeader('Content-Type', 'image/png');
+        res.send(buffer)
+    });
+
+    await browser.close();
 }
 
 // Exportacion de modulos
 module.exports = {
     get,
     save,
-    post
+    post,
+    test,
+    rawData
 }
