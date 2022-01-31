@@ -1,0 +1,28 @@
+{
+  "name": "aireto-o-l",
+  "version": "1.0.0",
+  "description": "Segunda version app lotero",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IamUnder/AirEto-o-l.git"
+  },
+  "author": "IamUnder",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IamUnder/AirEto-o-l/issues"
+  },
+  "homepage": "https://github.com/IamUnder/AirEto-o-l#readme",
+  "dependencies": {
+    "body-parser": "^1.19.1",
+    "cors": "^2.8.5",
+    "dotenv": "^15.0.0",
+    "express": "^4.17.2",
+    "mongoose": "^6.1.8",
+    "nodemon": "^2.0.15"
+  }
+}
