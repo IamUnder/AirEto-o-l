@@ -5,12 +5,80 @@ const puppeteer = require('puppeteer');
 // Importacion de modelos
 const Config = require('../models/config');
 const Num = require('../models/num');
+const Generate = require('../models/generate');
 
 // Funcion get
-get = ( req, res ) => {
+get = async ( req, res ) => {
     
     // Comprobamos si el valor de esta semana existe, si no lo generamos
+    const generate = await Generate.findOne({ id: process.env.IDPRIMITIVA , week: getWeek()})
 
+    if (!generate) { // Si no existe generamos
+
+        let more = await Num.find({}).sort([['primitiva', -1]]).limit(20).exec()
+        var result = []
+        var final = []
+
+        more.forEach(element => {
+            result.push(element.value)
+        })
+
+        // Formacion Array
+        var index = 0
+        // Parte numeros mas usados
+        while (index < 4) {
+            let aux = result[Math.floor(Math.random()*result.length)]
+            if (!final.includes(aux)) {
+                final.push(aux)
+                index++
+            }
+        }
+        // Parte numeros menos usados
+        index = 0
+        while (index < 2) {
+            let aux = Math.floor(Math.random() * (49 - 1) + 1)
+            if (!result.includes(aux)) {
+                if (!final.includes(aux)) {
+                    final.push(aux)
+                    index++
+                }
+            }
+        }
+        // Ordenamos el array 
+        final.sort(function(a, b) {
+            return a - b;
+        });
+
+        // Guardamos el valor
+        const generate = new Generate({
+            id: process.env.IDPRIMITIVA,
+            week: getWeek(),
+            value: final.join(' - ')
+        })
+
+        try {
+            
+            const savedGenerate = await generate.save()
+            return res.json({
+                mensaje: final.join(' - '),
+                data: 'Generacion correcta.'
+            })
+
+        } catch (error) {
+
+            return res.status(400).json({
+                error: error
+            })
+
+        }
+
+    }
+
+    console.log(generate);
+
+    res.json({
+        mensaje: generate.value
+    })
 
 }
 
@@ -91,6 +159,18 @@ async function rawData (url) {
 
     // Devolvemos los valores
     return valores
+
+}
+
+// Funcion para conseguir la semana
+getWeek = () => {
+
+    currentdate = new Date();
+    var oneJan = new Date(currentdate.getFullYear(),0,1);
+    var numberOfDays = Math.floor((currentdate - oneJan) / (24 * 60 * 60 * 1000));
+    var result = Math.ceil(( currentdate.getDay() + 1 + numberOfDays) / 7);
+
+    return result
 
 }
 
