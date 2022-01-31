@@ -129,6 +129,27 @@ save = async (req, res) => {
 
 }
 
+post = async (req, res) => {
+
+    // Guardamos los valores con aparicion
+    var valuesArray = req.body.value.split(' - ')
+        
+    valuesArray.forEach( async element => {
+
+        await Num.findOneAndUpdate({
+            value: parseInt(element)
+        },{
+            $inc:{
+                primitiva: 1
+            }
+        })
+    });
+
+    return res.json({
+        mensaje: 'Inserccion correcta.'
+    })
+}
+
 // Funcion para conseguir el raw
 async function rawData (url) {
 
@@ -177,5 +198,6 @@ getWeek = () => {
 // Exportacion de modulos
 module.exports = {
     get,
-    save
+    save,
+    post
 }
