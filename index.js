@@ -32,6 +32,7 @@ mongoose.connect(url,
 // Importacion de rutas
 const primitiva = require('./routes/primitiva')
 const bonoloto = require('./routes/bonoloto')
+const euromillon = require('./routes/euromillon')
 
 // Middleware
 app.get('/', (req, res) => {
@@ -43,6 +44,7 @@ app.get('/', (req, res) => {
 
 app.use('/primitiva', primitiva)
 app.use('/bonoloto', bonoloto)
+app.use('/euromillon', euromillon)
 
 // Inicializacion server
 const PORT = process.env.PORT || 3000

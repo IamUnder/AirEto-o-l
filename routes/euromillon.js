@@ -2,21 +2,21 @@
 const router = require('express').Router()
 
 // Declaracion de controller
-const primitiva = require('../controllers/primitiva')
+const euromillon = require('../controllers/euromillon')
 
 // Declaracion de modelos
 const Config = require('../models/config')
 const Num = require('../models/num')
 
 // Rutas 
-router.get('/test', primitiva.test) // Ruta de testing
-router.get('/get', primitiva.get) // Ruta de obtencion del resultado
-router.get('/save', primitiva.save) // Ruta para la carga de valores
-router.post('/post', primitiva.post) // Ruta para la carga de valores antiguos
+router.get('/test', euromillon.rawData) // Ruta de testing
+router.get('/get', euromillon.get) // Ruta de obtencion del resultado
+router.get('/save', euromillon.save) // Ruta para la carga de valores
+router.post('/post', euromillon.post) // Ruta para la carga de valores antiguos
 router.get('/init', async (req, res) => { // Ruta de inicializacion de la config 
 
     // Validamos que no se haya provocado el init ya
-    const isConfigExist = await Config.findOne({ id: process.env.IDPRIMITIVA })
+    const isConfigExist = await Config.findOne({ id: process.env.IDEUROMILLON })
     if (isConfigExist) {
         return res.status(400).json({
             error: 'Init ya ejecutado.',
@@ -25,8 +25,8 @@ router.get('/init', async (req, res) => { // Ruta de inicializacion de la config
     }
 
     const config = new Config({
-        id: process.env.IDPRIMITIVA,
-        descripcion: 'Ultimo sorteo recogido',
+        id: process.env.IDEUROMILLON,
+        descripcion: 'Ultimo sorteo recogido euromillon',
         value: '0'
     })
 

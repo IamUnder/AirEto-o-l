@@ -59,7 +59,8 @@ router.get('/initN', async (req, res) => { // Ruta de inicializacion de los nume
            value: index,
            primitiva: 0,
            bonoloto: 0,
-           euromillon: 0
+           euromillon: 0,
+           estrella: 0
        })
 
        num.save()

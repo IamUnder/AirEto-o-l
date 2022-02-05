@@ -1,5 +1,3 @@
-
-
 // Importacion de modelos
 const Config = require('../models/config');
 const Num = require('../models/num');
