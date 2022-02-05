@@ -18,6 +18,10 @@ const numSchema = mongoose.Schema({
     euromillon: {
         type: Number,
         required: true
+    },
+    estrella: {
+        type: Number,
+        required: true
     }
 },{
     versionKey: false
