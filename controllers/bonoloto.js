@@ -10,11 +10,11 @@ const puppeteer = require('puppeteer');
 get = async ( req, res ) => {
     
     // Comprobamos si el valor de esta semana existe, si no lo generamos
-    const generate = await Generate.findOne({ id: process.env.IDPRIMITIVA , week: getWeek()})
+    const generate = await Generate.findOne({ id: process.env.IDBONOLOTO , week: getWeek()})
 
     if (!generate) { // Si no existe generamos
 
-        let more = await Num.find({}).sort([['primitiva', -1]]).limit(20).exec()
+        let more = await Num.find({}).sort([['bonoloto', -1]]).limit(20).exec()
         var result = []
         var final = []
 
@@ -50,7 +50,7 @@ get = async ( req, res ) => {
 
         // Guardamos el valor
         const generate = new Generate({
-            id: process.env.IDPRIMITIVA,
+            id: process.env.IDBONOLOTO,
             week: getWeek(),
             value: final.join(' - ')
         })
@@ -85,16 +85,16 @@ get = async ( req, res ) => {
 save = async (req, res) => {
 
     // Obtenemos los ultimos valores
-    const valuesRaw = await rawData(process.env.PRIMITIVAURL)
+    const valuesRaw = await rawData(process.env.BONOLOTOURL)
 
     var values = valuesRaw.join(' - ')
     
     // Comprobamos si ya se ha cargado el valor
-    var config = await Config.findOne({ id: process.env.IDPRIMITIVA, value: values })
+    var config = await Config.findOne({ id: process.env.IDBONOLOTO, value: values })
     if (!config) {
 
         await Config.findOneAndUpdate({
-            id: process.env.IDPRIMITIVA
+            id: process.env.IDBONOLOTO
         },{
             value: values,
             date: Date.now()
@@ -109,7 +109,7 @@ save = async (req, res) => {
                 value: parseInt(element)
             },{
                 $inc:{
-                    primitiva: 1
+                    bonoloto: 1
                 }
             })
         });
@@ -139,7 +139,7 @@ post = async (req, res) => {
             value: parseInt(element)
         },{
             $inc:{
-                primitiva: 1
+                bonoloto: 1
             }
         })
     });
@@ -162,7 +162,7 @@ async function rawData (url) {
         await page.goto(url)
 
         //Obtenemos los numeros
-        const valoresRaw = await page.$eval(process.env.CLASSPRIMITIVA, numeros => numeros.textContent)
+        const valoresRaw = await page.$eval(process.env.CLASSBONOLOTO, numeros => numeros.textContent)
 
         // Tratamos los valores
         var valores = []
@@ -213,7 +213,7 @@ test = async (req, res) => {
     const page = await browser.newPage();
     await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36')
     await page.setJavaScriptEnabled(true)
-    await page.goto(process.env.PRIMITIVAURL)
+    await page.goto(process.env.BONOLOTOURL)
     console.log(page.isJavaScriptEnabled());
 
     await page.screenshot().then(function(buffer) {
