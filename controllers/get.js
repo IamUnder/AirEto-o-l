@@ -14,8 +14,6 @@ get = async ( req, res ) => {
     const bonoloto = await generate.find({ id: process.env.IDBONOLOTO }).sort([['week', -1]]).limit(1)
     const euromillon = await generate.find({ id: process.env.IDEUROMILLON }).sort([['week', -1]]).limit(1)
 
-    console.log(primitiva);
-
     return res.json({
         primitiva: primitiva[0].value,
         primtiva_week: primitiva[0].week,
