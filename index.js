@@ -38,10 +38,7 @@ const get = require('./routes/get')
 
 // Middleware
 app.get('/', (req, res) => {
-    res.json({
-        error: false,
-        mensaje: 'Works!'
-    })
+    res.send("Lotero funcionando")
 })
 
 app.use('/primitiva', primitiva)
@@ -49,6 +46,11 @@ app.use('/bonoloto', bonoloto)
 app.use('/euromillon', euromillon)
 app.use('/init', init)
 app.use('/get', get)
+
+// Middleware para las rutas que no existen
+app.use(function(req, res){
+    res.status(404).send({url: req.originalUrl + ' no encontrada'})
+})
 
 // Inicializacion server
 const PORT = process.env.PORT || 3000
