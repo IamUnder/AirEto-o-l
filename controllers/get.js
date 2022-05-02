@@ -5,6 +5,7 @@ const euromillon = require('../routes/euromillon')
 
 // Importamos los modelos
 const generate = require('../models/generate')
+const acierto = require('../models/acierto')
 
 // Funciones de devolver lo generado de esa semana
 get = async ( req, res ) => {
@@ -24,8 +25,57 @@ get = async ( req, res ) => {
     })
 }
 
+// Funcion para devolver los premios de la ultima semana
+price = async ( req, res ) => {
+
+    // id1 = primitiva, id2 = bonoloto, id3 = euromillon
+    const primitiva = await acierto.find({ id: process.env.IDPRIMITIVA, week: getWeek() })
+    const bonoloto = await acierto.find({ id: process.env.IDBONOLOTO, week: getWeek() })
+    const euromillon = await acierto.find({ id: process.env.IDEUROMILLON, week: getWeek() })
+
+    return res.json({
+        primitiva: primitiva[0] ?? null,
+        bonoloto: bonoloto[0] ?? null,
+        euromillon: euromillon[0] ?? null
+    })
+
+}
+
+// Funcion para devolver los premios de la semana pasada
+priceLastWeek = async ( req, res ) => {
+
+    // id1 = primitiva, id2 = bonoloto, id3 = euromillon
+    const primitiva = await acierto.find({ id: process.env.IDPRIMITIVA, week: getWeek() - 1})
+    const bonoloto = await acierto.find({ id: process.env.IDBONOLOTO, week: getWeek() - 1 })
+    const euromillon = await acierto.find({ id: process.env.IDEUROMILLON, week: getWeek() - 1 })
+
+    return res.json({
+        primitiva: primitiva[0] ?? null,
+        bonoloto: bonoloto[0] ?? null,
+        euromillon: euromillon[0] ?? null
+    })
+
+}
+
+// Funcion para conseguir la semana
+getWeek = () => {
+
+    currentdate = new Date()
+    var oneJan = new Date(currentdate.getFullYear(),0,1)
+    var numberOfDays = Math.floor((currentdate - oneJan) / (24 * 60 * 60 * 1000))
+    var result = Math.ceil(( currentdate.getDay() + 1 + numberOfDays) / 7)
+
+    if (currentdate.getDay() > 0 && currentdate.getDay() < 3) {
+        result++
+    }
+
+    return result
+
+}
 
 
 module.exports = {
-    get
+    get, 
+    price,
+    priceLastWeek,
 }
