@@ -1,19 +1,9 @@
-// Declaracion de modulos
-const router = require('express').Router()
-
-// Declaracion de controller
-const primitiva = require('../controllers/primitiva')
-
-// Declaracion de modelos
+// Imporacion de modelos
 const Config = require('../models/config')
 const Num = require('../models/num')
 
-// Rutas 
-router.get('/test', primitiva.test) // Ruta de testing
-router.get('/get', primitiva.get) // Ruta de obtencion del resultado
-router.get('/save', primitiva.save) // Ruta para la carga de valores
-router.post('/post', primitiva.post) // Ruta para la carga de valores antiguos
-router.get('/init', async (req, res) => { // Ruta de inicializacion de la config 
+// Ruta de inicio de configuracion
+initC = async ( req, res ) => {
 
     // Validamos que no se haya provocado el init ya
     const isConfigExist = await Config.findOne({ id: process.env.IDPRIMITIVA })
@@ -24,29 +14,47 @@ router.get('/init', async (req, res) => { // Ruta de inicializacion de la config
         })
     }
 
-    const config = new Config({
+    const configPrimitiva = new Config({
         id: process.env.IDPRIMITIVA,
+        descripcion: 'Ultimo sorteo recogido',
+        value: '0'
+    })
+
+    const configBonoloto = new Config({
+        id: process.env.IDBONOLOTO,
+        descripcion: 'Ultimo sorteo recogido',
+        value: '0'
+    })
+
+    const configEuromillon = new Config({
+        id: process.env.IDEUROMILLON,
         descripcion: 'Ultimo sorteo recogido',
         value: '0'
     })
 
     try {
         
-        const savedConfig = await config.save()
+        const savedConfigPrimitiva = await configPrimitiva.save()
+        const savedConfigBonoloto = await configBonoloto.save()
+        const savedConfigEuromillon = await configEuromillon.save()
         res.json({
             mensaje: 'Inializacion correcta.'
         })
 
     } catch (error) {
+        
         res.status(400).json({
             error: error
         })
+
     }
 
-})
-router.get('/initN', async (req, res) => { // Ruta de inicializacion de los numeros
+}
 
-    const isNumsExist = await Config.findOne({ value: 1 })
+// Ruta de inicio de numeros
+initN = async ( req, res ) => {
+
+    const isNumsExist = await Num.findOne({ value: 1 })
     if (isNumsExist) {
         return res.status(400).json({
             error: 'Init ya ejecutado.',
@@ -62,16 +70,17 @@ router.get('/initN', async (req, res) => { // Ruta de inicializacion de los nume
             euromillon: 0,
             estrella: 0
         })
-
+    
         num.save()
     }
 
     res.json({
         mensaje: 'Inicializacion correcta.'
     })
+}
 
-})
-
-
-//Exportacion de modulos
-module.exports = router
+// Exportacion de modulos
+module.exports = {
+    initC,
+    initN
+}
