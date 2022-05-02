@@ -1,0 +1,14 @@
+URL=
+DBNAME=
+DBUSER=
+DBPASSWORD=
+PORT=
+PRIMITIVAURL=https://www.laprimitiva.info
+BONOLOTOURL=https://www.loteriabonoloto.info
+EUROMILLONURL=https://www.euromillones.com.es
+IDPRIMITIVA=1
+IDBONOLOTO=2
+IDEUROMILLON=3
+CLASSPRIMITIVA=.combi
+CLASSBONOLOTO=.combi
+CLASSEUROMILLON=.numestre
