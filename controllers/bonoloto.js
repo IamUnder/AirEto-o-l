@@ -2,6 +2,7 @@
 const Config = require('../models/config');
 const Num = require('../models/num');
 const Generate = require('../models/generate');
+const Acierto = require('../models/acierto')
 const puppeteer = require('puppeteer');
 
 // Funcion get
@@ -100,6 +101,28 @@ save = async (req, res) => {
 
         // Guardamos los valores con aparicion
         var valuesArray = values.split(' - ')
+
+        // Comprobamos los valores con los de esa semana para ver si hay premio
+        var generate = await Generate.find({ id: process.env.IDBONOLOTO }).sort([['week', -1]]).limit(1)
+        var generateValues = generate[0].value.split(' - ')
+        var premio = []
+        // Comprobamos si hay premio
+        for (let i = 0; i < generateValues.length; i++) {
+            if (valuesArray.includes(generateValues[i])) {
+                premio.push(true)
+            } else {
+                premio.push(false)
+            }
+        }
+        
+        // Guardamos los resultados en la base de datos
+        var acierto = new Acierto({
+            resultado: valuesArray.join(' - '),
+            apuesta: generateValues.join(' - '),
+            premio: premio.join(' - '),
+            id: process.env.IDBONOLOTO,
+            week: getWeek(),
+        }).save()
         
         valuesArray.forEach( async element => {
 

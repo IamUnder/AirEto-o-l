@@ -54,7 +54,7 @@ initC = async ( req, res ) => {
 // Ruta de inicio de numeros
 initN = async ( req, res ) => {
 
-    const isNumsExist = await Config.findOne({ value: 1 })
+    const isNumsExist = await Num.findOne({ value: 1 })
     if (isNumsExist) {
         return res.status(400).json({
             error: 'Init ya ejecutado.',
