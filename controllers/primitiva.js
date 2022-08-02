@@ -13,7 +13,7 @@ get = async ( req, res ) => {
 
     if (!generate) { // Si no existe generamos
 
-        let more = await Num.find({}).sort([['primitiva', -1]]).limit(20).exec()
+        let more = await Num.find({}).sort([['primitiva', -1]]).limit(15).exec()
         var result = []
         var final = []
 
@@ -24,24 +24,42 @@ get = async ( req, res ) => {
         // Formacion Array
         var index = 0
         // Parte numeros mas usados
-        while (index < 4) {
-            let aux = result[Math.floor(Math.random()*result.length)]
-            if (!final.includes(aux)) {
-                final.push(aux)
+        while (index < 6) {
+            // Los primeros 3 numeros cogemos los primeros de la lista
+            if (index < 3) {
+                final.push(result[index])
                 index++
-            }
-        }
-        // Parte numeros menos usados
-        index = 0
-        while (index < 2) {
-            let aux = Math.floor(Math.random() * (49 - 1) + 1)
-            if (!result.includes(aux)) {
+            } else {
+                let aux = result[Math.floor(Math.random()*result.length)]
                 if (!final.includes(aux)) {
                     final.push(aux)
                     index++
                 }
             }
         }
+        // Parte numeros menos usados
+
+        // Parte antigua
+        // index = 0
+        // while (index < 2) {
+        //     let aux = Math.floor(Math.random() * (49 - 1) + 1)
+        //     if (!result.includes(aux)) {
+        //         if (!final.includes(aux)) {
+        //             final.push(aux)
+        //             index++
+        //         }
+        //     }
+        // }
+
+        // Parte nueva
+        // generamos el ultimo numero entre el 1 y el 49 sin repetir
+        while (final.length < 6) {
+            let aux = Math.floor(Math.random() * (49 - 1) + 1)
+            if (!final.includes(aux)) {
+                final.push(aux)
+            }
+        }
+
         // Ordenamos el array 
         final.sort(function(a, b) {
             return a - b;

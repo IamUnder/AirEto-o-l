@@ -13,7 +13,7 @@ get = async ( req, res ) => {
 
     if (!generate) { // Si no existe generamos
 
-        let more = await Num.find({}).sort([['euromillon', -1]]).limit(20).exec()
+        let more = await Num.find({}).sort([['euromillon', -1]]).limit(15).exec()
         var result = []
         var final = []
 
@@ -24,24 +24,43 @@ get = async ( req, res ) => {
         // Formacion Array
         var index = 0
         // Parte numeros mas usados
-        while (index < 3) {
-            let aux = result[Math.floor(Math.random()*result.length)]
-            if (!final.includes(aux)) {
-                final.push(aux)
+        while (index < 5) {
+            // Los primeros 2 numeros cogemos los primeros
+            if (index < 2) {
+                final.push(result[index])
                 index++
-            }
-        }
-        // Parte numeros menos usados
-        index = 0
-        while (index < 2) {
-            let aux = Math.floor(Math.random() * (50 - 1) + 1)
-            if (!result.includes(aux)) {
+            } else {
+
+                let aux = result[Math.floor(Math.random()*result.length)]
                 if (!final.includes(aux)) {
                     final.push(aux)
                     index++
                 }
+
             }
         }
+        // Parte numeros menos usados
+
+        // parte antigua
+        // index = 0
+        // while (index < 2) {
+        //     let aux = Math.floor(Math.random() * (50 - 1) + 1)
+        //     if (!result.includes(aux)) {
+        //         if (!final.includes(aux)) {
+        //             final.push(aux)
+        //             index++
+        //         }
+        //     }
+        // }
+
+        // Parte nueva
+        while (final.length < 5) {
+            let aux = Math.floor(Math.random() * (50 - 1) + 1)
+            if (!final.includes(aux)) {
+                final.push(aux)
+            }
+        }
+
         // Ordenamos el array 
         final.sort(function(a, b) {
             return a - b;
@@ -51,7 +70,8 @@ get = async ( req, res ) => {
         let moreStar = await Num.find({value: {$lte: 12}}).sort([['estrella', -1]]).limit(6).exec()
 
         for (let index = 0; index < 2; index++) {
-            let aux = moreStar[Math.floor(Math.random()*moreStar.length)]
+            //let aux = moreStar[Math.floor(Math.random()*moreStar.length)] // Antiguo de generacion aletaria
+            let aux = moreStar[index] // Nuevo (cogemos las dos que mas salen)
             final.push(aux.value)
         }
 
