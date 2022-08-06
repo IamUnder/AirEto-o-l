@@ -112,6 +112,9 @@ save = async (req, res) => {
     // Obtenemos los ultimos valores
     const valuesRaw = await rawData(process.env.BONOLOTOURL)
 
+    // Eliminamos el ultimo valor
+    valuesRaw.pop()
+
     var values = valuesRaw.join(' - ')
     
     // Comprobamos si ya se ha cargado el valor
@@ -126,6 +129,7 @@ save = async (req, res) => {
         }).exec()
 
         // Guardamos los valores con aparicion
+        values.pop()
         var valuesArray = values.split(' - ')
 
         // Comprobamos los valores con los de esa semana para ver si hay premio
@@ -140,12 +144,15 @@ save = async (req, res) => {
                 premio.push(false)
             }
         }
+
+        // Contamos las veces que hay "true" en el array
+        var count = premio.filter(Boolean).length
         
         // Guardamos los resultados en la base de datos
         var acierto = new Acierto({
             resultado: valuesArray.join(' - '),
             apuesta: generateValues.join(' - '),
-            premio: premio.join(' - '),
+            premio: count,
             id: process.env.IDBONOLOTO,
             week: getWeek(),
         }).save()
