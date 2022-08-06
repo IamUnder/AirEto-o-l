@@ -129,8 +129,8 @@ save = async (req, res) => {
         }).exec()
 
         // Guardamos los valores con aparicion
-        values.pop()
         var valuesArray = values.split(' - ')
+        valuesArray.pop()
 
         // Comprobamos los valores con los de esa semana para ver si hay premio
         var generate = await Generate.find({ id: process.env.IDBONOLOTO }).sort([['week', -1]]).limit(1)
