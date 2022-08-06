@@ -133,19 +133,36 @@ save = async (req, res) => {
         var generateValues = generate[0].value.split(' - ')
         var premio = []
         // Comprobamos si hay premio
+        var first = valuesArray.slice(0, 5)
+        var second = valuesArray.slice(5, 7)
+
+        var firstG = generateValues.slice(0, 5)
+        var secondG = generateValues.slice(5, 7)
+
         for (let i = 0; i < generateValues.length; i++) {
-            if (valuesArray.includes(generateValues[i])) {
-                premio.push(true)
+            if (i < 5) {
+                if (first.includes(firstG[i])) {
+                    premio.push(true)
+                } else {
+                    premio.push(false)
+                }
             } else {
-                premio.push(false)
+                if (second.includes(secondG[i])) {
+                    premio.push(true)
+                } else {
+                    premio.push(false)
+                }
             }
         }
         
+        // Contamos las veces que hay "true" en el array
+        var count = premio.filter(Boolean).length
+
         // Guardamos los resultados en la base de datos
         var acierto = new Acierto({
             resultado: valuesArray.join(' - '),
             apuesta: generateValues.join(' - '),
-            premio: premio.join(' - '),
+            premio: count,
             id: process.env.IDEUROMILLON,
             week: getWeek(),
         }).save()
