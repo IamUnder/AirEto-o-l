@@ -57,6 +57,23 @@ priceLastWeek = async ( req, res ) => {
 
 }
 
+// Funcion para devolver los premios de esta semana
+priceWeek = async ( req, res ) => {
+
+    const week = req.params.week
+
+    // id1 = primitiva, id2 = bonoloto, id3 = euromillon
+    const primitiva = await acierto.find({ id: process.env.IDPRIMITIVA, week: week })
+    const bonoloto = await acierto.find({ id: process.env.IDBONOLOTO, week: week })
+    const euromillon = await acierto.find({ id: process.env.IDEUROMILLON, week: week })
+
+    return res.json({
+        primitiva: primitiva ?? null,
+        bonoloto: bonoloto ?? null,
+        euromillon: euromillon ?? null
+    })
+}
+
 // Funcion para conseguir la semana
 getWeek = () => {
 
@@ -78,4 +95,5 @@ module.exports = {
     get, 
     price,
     priceLastWeek,
+    priceWeek
 }
