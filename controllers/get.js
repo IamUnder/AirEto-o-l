@@ -63,9 +63,10 @@ priceWeek = async ( req, res ) => {
     const week = req.params.week
 
     // id1 = primitiva, id2 = bonoloto, id3 = euromillon
-    const primitiva = await acierto.find({ id: process.env.IDPRIMITIVA, week: week })
-    const bonoloto = await acierto.find({ id: process.env.IDBONOLOTO, week: week })
-    const euromillon = await acierto.find({ id: process.env.IDEUROMILLON, week: week })
+    // evitamos los datos que tengan aciertos = 0
+    const primitiva = await acierto.find({ id: process.env.IDPRIMITIVA, week: week, aciertos: { $gt: 0 } })
+    const bonoloto = await acierto.find({ id: process.env.IDBONOLOTO, week: week, aciertos: { $gt: 0 } })
+    const euromillon = await acierto.find({ id: process.env.IDEUROMILLON, week: week, aciertos: { $gt: 0 } })
 
     return res.json({
         primitiva: primitiva ?? null,
